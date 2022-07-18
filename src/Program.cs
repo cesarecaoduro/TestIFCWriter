@@ -7,9 +7,8 @@ var site = new IfcSite(db, "MySite")
 };
 
 
-var facility = new IfcFacility(db, "MyFacility");
 
-var bridge = new IfcBridge(db)
+var bridge = new IfcBridge(site, null, null)
 {
     Name = "MyBridge",
     Description = "Just another bridge"
@@ -41,7 +40,7 @@ IfcFootingType footingType = new IfcFootingType(db, name, IfcFootingTypeEnum.PAD
     MaterialSelect = material,
 };
 
-IfcRectangleHollowProfileDef rect = new IfcRectangleHollowProfileDef(db, name, length, width, depth);
+IfcRectangleProfileDef rect = new IfcRectangleProfileDef(db, name, length, width);
 IfcExtrudedAreaSolid extrusion = new IfcExtrudedAreaSolid(rect, new IfcAxis2Placement3D(new IfcCartesianPoint(db, 0, 0, 0)), new IfcDirection(db, 0, 0, 1), depth);
 
 IfcProductDefinitionShape productRep = new IfcProductDefinitionShape(new IfcShapeRepresentation(extrusion));
