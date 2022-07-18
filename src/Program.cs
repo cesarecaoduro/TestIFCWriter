@@ -1,12 +1,15 @@
 ﻿using GeometryGym.Ifc;
 
 var db = new DatabaseIfc(ReleaseVersion.IFC4X3_RC4);
-var site = new IfcSite(db, "MySite");
+var site = new IfcSite(db, "MySite")
+{
+    Description = "Just another site",
+};
 
 
 var facility = new IfcFacility(db, "MyFacility");
 
-var bridge = new IfcBridge(db)
+var bridge = new IfcBridge()
 {
     Name = "MyBridge",
     Description = "Just another bridge"
@@ -18,7 +21,7 @@ var project = new IfcProject(site, "MyProject", IfcUnitAssignment.Length.Metre);
 
 
 var foundations = new IfcFacilityPart(
-    facility,
+    bridge,
     "Foundations",
     new IfcFacilityPartTypeSelect(IfcFacilityPartCommonTypeEnum.BELOWGROUND),
     IfcFacilityUsageEnum.NOTDEFINED
@@ -29,23 +32,38 @@ var length = 1.2;
 var width = 1.2;
 var depth = 2.4;
 
-IfcFootingType footingType = new IfcFootingType(db, name, IfcFootingTypeEnum.PAD_FOOTING);
+IfcMaterial material = new IfcMaterial(db, "Concrete")
+{
+};
+
+IfcFootingType footingType = new IfcFootingType(db, name, IfcFootingTypeEnum.PAD_FOOTING)
+{
+    MaterialSelect = material,
+};
+
+IfcRectangleHollowProfileDef rect = new IfcRectangleHollowProfileDef(db, name, length, width, depth);
+IfcExtrudedAreaSolid extrusion = new IfcExtrudedAreaSolid(rect, new IfcAxis2Placement3D(new IfcCartesianPoint(db, 0, 0, 0)), new IfcDirection(db, 0, 0, 1), depth);
+IfcProductDefinitionShape productRep = new IfcProductDefinitionShape(new IfcShapeRepresentation(extrusion));
+IfcShapeRepresentation shapeRep = new(extrusion);
 
 footingType.RepresentationMaps.Add(
     new IfcRepresentationMap(
         db.Factory.XYPlanePlacement,
-        new IfcShapeRepresentation(
-            new IfcExtrudedAreaSolid(
-                new IfcRectangleHollowProfileDef(db, name, length, width, depth),
-                new IfcAxis2Placement3D(
-                    new IfcCartesianPoint(db, 0 ,0, 0)
-                    ),
-                db.Factory.ZAxisNegative,
-                depth
-            )
-        )
+        shapeRep
     )
 );
+
+
+IfcFooting footing = new(
+    foundations,
+    null,
+    productRep
+    )
+{
+    PredefinedType = IfcFootingTypeEnum.PAD_FOOTING,
+    ObjectType = name
+};
+
 
 db.WriteFile("IFC4X3RC4_testBridge.ifc");
 
