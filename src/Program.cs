@@ -1,4 +1,5 @@
 ﻿using GeometryGym.Ifc;
+using System.Reflection;
 
 var db = new DatabaseIfc(ReleaseVersion.IFC4X3_RC4);
 var site = new IfcSite(db, "MySite")
@@ -9,7 +10,7 @@ var site = new IfcSite(db, "MySite")
 
 var facility = new IfcFacility(db, "MyFacility");
 
-var bridge = new IfcBridge()
+var bridge = new IfcBridge(db)
 {
     Name = "MyBridge",
     Description = "Just another bridge"
@@ -43,6 +44,7 @@ IfcFootingType footingType = new IfcFootingType(db, name, IfcFootingTypeEnum.PAD
 
 IfcRectangleHollowProfileDef rect = new IfcRectangleHollowProfileDef(db, name, length, width, depth);
 IfcExtrudedAreaSolid extrusion = new IfcExtrudedAreaSolid(rect, new IfcAxis2Placement3D(new IfcCartesianPoint(db, 0, 0, 0)), new IfcDirection(db, 0, 0, 1), depth);
+
 IfcProductDefinitionShape productRep = new IfcProductDefinitionShape(new IfcShapeRepresentation(extrusion));
 IfcShapeRepresentation shapeRep = new(extrusion);
 
@@ -64,7 +66,8 @@ IfcFooting footing = new(
     ObjectType = name
 };
 
-
-db.WriteFile("IFC4X3RC4_testBridge.ifc");
+DirectoryInfo di = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
+di = Directory.GetParent(di.FullName);
+db.WriteFile(Path.Combine(di.FullName,"IFC4X3RC4_testBridge.ifc"));
 
 
