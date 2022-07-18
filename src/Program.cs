@@ -4,15 +4,18 @@ var db = new DatabaseIfc(ReleaseVersion.IFC4X3_RC4);
 
 
 
-var facility = new IfcFacility(db, "MyFacility");
-
-var bridge = new IfcBridge(facility.Database)
+var facility = new IfcFacility(db, "My Facility")
 {
-    Name = "MyBridge",
+    Description = "Just another facility",
+};
+
+var bridge = new IfcBridge(facility, null, null)
+{
+    Name = "My Bridge",
     Description = "Just another bridge"
 };
 
-var project = new IfcProject(bridge, "MyProject", IfcUnitAssignment.Length.Metre);
+var project = new IfcProject(facility, "My Project", IfcUnitAssignment.Length.Metre);
 {
 };
 
