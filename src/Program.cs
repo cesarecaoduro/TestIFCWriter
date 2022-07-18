@@ -1,5 +1,4 @@
 ﻿using GeometryGym.Ifc;
-using System.Reflection;
 
 var db = new DatabaseIfc(ReleaseVersion.IFC4X3_RC4);
 var site = new IfcSite(db, "MySite")
@@ -55,7 +54,6 @@ footingType.RepresentationMaps.Add(
     )
 );
 
-
 IfcFooting footing = new(
     foundations,
     null,
@@ -66,8 +64,4 @@ IfcFooting footing = new(
     ObjectType = name
 };
 
-DirectoryInfo di = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
-di = Directory.GetParent(di.FullName);
-db.WriteFile(Path.Combine(di.FullName,"IFC4X3RC4_testBridge.ifc"));
-
-
+db.WriteFile(Path.Combine("IFC4X3RC4_testBridge.ifc"));
